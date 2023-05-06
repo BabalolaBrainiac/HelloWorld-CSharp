@@ -20,7 +20,7 @@ namespace HelloWorld
 
             DateTime current = databaseConnection.QuerySingle<DateTime>(query);
 
-            Console.WriteLine(current);
+            Console.WriteLine("This is the current date: " + current);
 
             Computer myComputer = new Computer()
             {
