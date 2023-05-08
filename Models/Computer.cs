@@ -5,7 +5,9 @@ namespace HelloWorld.Models
     {
         public string Motherboard { get; set; } = "";
 
-        public int CPUCores { get; set; }
+        public int? ComputerId { get; set; }
+
+        public int? CPUCores { get; set; }
 
         public bool HasWifi { get; set; }
 

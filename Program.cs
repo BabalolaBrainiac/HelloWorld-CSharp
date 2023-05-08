@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Data;
 using Dapper;
+using HelloWorld.Data;
 using HelloWorld.Models;
 using Microsoft.Data.SqlClient;
 
@@ -11,14 +12,12 @@ namespace HelloWorld
         static void Main(string[] args)
         {
 
-            string dbConnectionString = "Server=localhost;Database=DotNetCourseDatabase;TrustServerCertificate=true;Trusted_Connection=false;User Id=sa; Password=SQLConnect1";
-
-
-            IDbConnection databaseConnection = new SqlConnection(dbConnectionString);
+            DapperDataContext dapperContext = new DapperDataContext();
+            EntityFrameowrkContext efDataContext = new EntityFrameowrkContext();
 
             string query = "SELECT GETDATE()";
 
-            DateTime current = databaseConnection.QuerySingle<DateTime>(query);
+            DateTime current = dapperContext.QuerySingle<DateTime>(query);
 
             Console.WriteLine("This is the current date: " + current);
 
@@ -33,6 +32,9 @@ namespace HelloWorld
                 VideoCard = "Mac Pro VideoCard"
             };
 
+            //Using Entity Framework
+            efDataContext.Computer.Add(myComputer);
+            efDataContext.SaveChanges();
 
 
             string sql = @"INSERT INTO TutorialAppSchema.Computer (
@@ -55,14 +57,20 @@ namespace HelloWorld
 
             Console.WriteLine(sql);
 
-            int result = databaseConnection.Execute(sql);
+            //Using Dapper
+            bool result = dapperContext.LoadData(sql);
+            int count = dapperContext.LoadAndCountData(sql);
+
             Console.WriteLine(result);
 
 
+
+            //Select
             string selectStatement = @"
 
              SELECT
                 Computer.Motherboard,
+                Computer.ComputerId,    
                 Computer.CPUCores,
                 Computer.HasWifi,
                 Computer.HasLTE,
@@ -70,12 +78,17 @@ namespace HelloWorld
                 Computer.Price,
                 Computer.VideoCard FROM TutorialAppSchema.Computer";
 
-            IEnumerable<Computer> computers = databaseConnection.Query<Computer>(selectStatement);
+            //Using Dapper
+            IEnumerable<Computer> computers = dapperContext.QueryMultiple<Computer>(selectStatement);
 
-            foreach(Computer computer in computers)
+            //Using Entity Framework
+            IEnumerable<Computer> efComputers  = efDataContext.Computer.ToList<Computer>();
+
+      foreach (Computer computer in computers)
             {
                 Console.WriteLine("'"
                     + myComputer.Motherboard
+                            + "', '" + computer.ComputerId
                             + "', '" + computer.CPUCores
                             + "', '" + computer.HasWifi
                             + "', '" + computer.HasLTE
@@ -84,12 +97,7 @@ namespace HelloWorld
                             + "', '" + computer.VideoCard
                             +
                             "'");
-
             }
-
-
-           
-
 
 
             //Console.WriteLine(myComputer.Motherboard);

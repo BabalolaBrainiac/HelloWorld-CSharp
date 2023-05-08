@@ -4,10 +4,10 @@ using Dapper;
 using Microsoft.Data.SqlClient;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
-namespace HelloWorld.Dapper
+namespace HelloWorld.Data
 {
 
-    public class Data
+    public class DapperDataContext
     {
         string dbConnectionString = "Server=localhost;Database=DotNetCourseDatabase;TrustServerCertificate=true;Trusted_Connection=false;User Id=sa; Password=SQLConnect1";
 
